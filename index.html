@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Image Classifier</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .card {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            width: 400px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        input[type="file"] {
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 12px 25px;
+            background-color: #667eea;
+            border: none;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        button:hover {
+            background-color: #5a67d8;
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f3f4f6;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<script>
+function showFileName(event) {
+    const fileNameDisplay = document.getElementById("file-name");
+
+    if (event.target.files.length > 0) {
+        fileNameDisplay.innerText = "Selected: " + event.target.files[0].name;
+        fileNameDisplay.style.color = "#2ecc71";
+        fileNameDisplay.style.fontWeight = "500";
+    } else {
+        fileNameDisplay.innerText = "No image selected";
+        fileNameDisplay.style.color = "#555";
+    }
+}
+</script>
+<body>
+
+    <div class="card">
+        <h2>AI Image Classification</h2>
+
+        <form action="/upload" method="POST" enctype="multipart/form-data">
+            <div class="file-upload">
+    <label for="fileInput" class="custom-file-upload">
+        📂 Choose Image
+    </label>
+
+    <input 
+        id="fileInput" 
+        type="file" 
+        name="image" 
+        required 
+        onchange="showFileName(event)"
+    />
+
+    <p id="file-name">No image selected</p>
+            </div>
+
+            <br>
+            <button type="submit">Predict</button>
+        </form>
+
+        {% if prediction %}
+        <div class="result">
+            <h3>Prediction: {{ prediction }}</h3>
+            <h3>Confidence: {{ confidence }}%</h3>
+        </div>
+        {% endif %}
+    </div>
+
+</body>
+</html>
