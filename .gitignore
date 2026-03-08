@@ -1,0 +1,5 @@
+dataset/
+uploads/
+__pycache__/
+*.pth
+venv/
