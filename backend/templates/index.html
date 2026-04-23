@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clean AI Classifier</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+
+<body>
+  <div class="container">
+    <header class="page-header">
+      <a class="brand" href="#">
+        <span class="brand-mark">AI</span>
+        <span>InterpAI</span>
+      </a>
+      <nav class="navigation">
+        <a href="#how-it-works">How it works</a>
+        <a href="#predict">Predict</a>
+        <a href="#results">Results</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <div class="hero-grid">
+        <div>
+          <h1 class="hero-title">A cleaner AI image classification experience.</h1>
+          <p class="hero-copy">Upload an image, get a prediction instantly, and visualize what the model focuses on using Grad-CAM.</p>
+          <div class="feature-list">
+            <div class="feature-card">
+              <div>
+                <strong>Fast predictions</strong>
+                <span>Classify images quickly and clearly.</span>
+              </div>
+            </div>
+            <div class="feature-card">
+              <div>
+                <strong>Explainable results</strong>
+                <span>See heatmaps that show model attention.</span>
+              </div>
+            </div>
+          </div>
+          <div class="cta-row">
+            <a class="btn-primary" href="#predict">Start now</a>
+            <a class="btn-secondary" href="#results">View output</a>
+          </div>
+        </div>
+        <div>
+          <div class="panel">
+            <h2 id="predict">Upload your image</h2>
+            <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data">
+              <div class="upload-box">
+                <label>
+                  <div class="upload-instructions">
+                    <strong>Click to upload an image</strong>
+                    <span>Supports JPG, JPEG, PNG.</span>
+                  </div>
+                  <input type="file" name="image" onchange="previewImage(event)" required>
+                </label>
+                <div class="file-preview">
+                  <img id="preview" alt="Selected preview" style="display:none;">
+                </div>
+              </div>
+              <div class="form-footnote">
+                <span>Ready for analysis.</span>
+                <button class="btn-primary" type="submit">Predict</button>
+              </div>
+            </form>
+            <div class="loader" id="loader">
+              <div class="spinner"></div>
+              <p>AI is analyzing image...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="how-it-works" class="interface-card">
+      <div class="panel">
+        <h2>How it works</h2>
+        <p>Drop an image into the uploader, then let the model identify the class and confidence. When a heatmap is available, it highlights where the model looked to make that decision.</p>
+      </div>
+    </section>
+
+    <section id="results" class="results">
+      {% if prediction %}
+      <div class="result-card panel">
+        <h3>Prediction Result</h3>
+        <div class="result-item">
+          <strong>Class</strong>
+          <span>{{ prediction }}</span>
+        </div>
+        <div class="result-item">
+          <strong>Confidence</strong>
+          <span>{{ confidence }}%</span>
+        </div>
+      </div>
+      {% endif %}
+
+      {% if heatmap %}
+      <div class="heatmap-card panel">
+        <h3>Grad-CAM Heatmap</h3>
+        <div class="heatmap-preview">
+          <img src="{{ heatmap }}" alt="Grad-CAM heatmap">
+        </div>
+      </div>
+      {% endif %}
+    </section>
+
+    <footer class="footer">
+      Built with Flask and Grad-CAM for explainable image classification.
+    </footer>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+</body>
+
+</html>
