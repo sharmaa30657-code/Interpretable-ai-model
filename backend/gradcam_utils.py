@@ -1,10 +1,3 @@
-try:
-    from pytorch_grad_cam import GradCAM
-    from pytorch_grad_cam.utils.image import show_cam_on_image
-except ImportError:
-    GradCAM = None
-    show_cam_on_image = None
-
 import cv2
 import os
 import torch
@@ -18,10 +11,9 @@ _transform = transforms.Compose([
 ])
 
 def generate_gradcam(model, img_path):
-    if GradCAM is None or show_cam_on_image is None:
-        raise ImportError(
-            "pytorch_grad_cam is required. Run: pip install grad-cam"
-        )
+
+    from pytorch_grad_cam import GradCAM
+    from pytorch_grad_cam.utils.image import show_cam_on_image
 
     image = Image.open(img_path).convert("RGB")
     img_tensor = _transform(image).unsqueeze(0)
@@ -40,7 +32,6 @@ def generate_gradcam(model, img_path):
     img_resized = cv2.resize(img, (cam_w, cam_h))
 
     visualization = show_cam_on_image(img_resized, grayscale_cam, use_rgb=True)
-
 
     output_dir = os.path.join(os.path.dirname(__file__), "static")
     os.makedirs(output_dir, exist_ok=True)
