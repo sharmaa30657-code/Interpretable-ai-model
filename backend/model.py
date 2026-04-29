@@ -5,14 +5,16 @@ from PIL import Image
 import torch.nn as nn
 import pickle
 
-BASE_DIR = os.path.dirname(__file__)
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 ROOT_DIR = os.path.abspath(os.path.join(BASE_DIR, ".."))
 
-# Prefer project root classes/model if available, otherwise fallback to backend copies
 CLASSES_PATHS = [
     os.path.join(ROOT_DIR, "classes.pkl"),
     os.path.join(BASE_DIR, "classes.pkl")
 ]
+
+
 MODEL_CANDIDATES = [
     os.path.join(ROOT_DIR, "best_model.pth"),
     os.path.join(BASE_DIR, "best_model.pth"),
@@ -20,7 +22,9 @@ MODEL_CANDIDATES = [
     os.path.join(BASE_DIR, "custom_model.pth")
 ]
 
+
 classes = None
+
 for path in CLASSES_PATHS:
     if os.path.exists(path):
         with open(path, "rb") as f:
@@ -28,50 +32,107 @@ for path in CLASSES_PATHS:
         print(f"Loaded class labels from {path}")
         break
 
-MODEL_PATH = next((p for p in MODEL_CANDIDATES if os.path.exists(p)), None)
+
+MODEL_PATH = next(
+    (p for p in MODEL_CANDIDATES if os.path.exists(p)),
+    None
+)
+
 
 num_classes = len(classes) if classes is not None else 0
 
+
 if num_classes == 0 and MODEL_PATH is not None:
-    checkpoint = torch.load(MODEL_PATH, map_location=torch.device('cpu'))
+
+    checkpoint = torch.load(
+        MODEL_PATH,
+        map_location=torch.device("cpu")
+    )
+
     if isinstance(checkpoint, dict):
+
         if "fc.weight" in checkpoint:
             num_classes = checkpoint["fc.weight"].shape[0]
-        elif "state_dict" in checkpoint and "fc.weight" in checkpoint["state_dict"]:
+
+        elif (
+            "state_dict" in checkpoint and
+            "fc.weight" in checkpoint["state_dict"]
+        ):
             num_classes = checkpoint["state_dict"]["fc.weight"].shape[0]
 
 if num_classes == 0:
     num_classes = 3
     classes = [f"class_{i}" for i in range(num_classes)]
-    print("Warning: Could not load class labels or checkpoint info. Falling back to 3 classes.")
+
+    print(
+        "Warning: Could not load class labels or checkpoint info. "
+        "Falling back to 3 classes."
+    )
+
 elif classes is None:
     classes = [f"class_{i}" for i in range(num_classes)]
 
-model = models.resnet18(weights=None)
-model.fc = nn.Linear(model.fc.in_features, num_classes)
 
-if MODEL_PATH:
+model = models.resnet18(weights=None)
+
+model.fc = nn.Linear(
+    model.fc.in_features,
+    num_classes
+)
+
+
+if MODEL_PATH and os.path.exists(MODEL_PATH):
+
     print(f"Loading model weights from {MODEL_PATH}")
-    model.load_state_dict(torch.load(MODEL_PATH, map_location=torch.device('cpu')))
+
+    model.load_state_dict(
+        torch.load(
+            MODEL_PATH,
+            map_location=torch.device("cpu")
+        )
+    )
+
+    model.to(torch.device("cpu"))
     model.eval()
+
 else:
-    print("Warning: Model weights not found in backend or project root. Using randomly initialized model.")
+
+    print(
+        "Warning: Model weights not found in backend or project root. "
+        "Using randomly initialized model."
+    )
+
+    model.to(torch.device("cpu"))
     model.eval()
+
 
 transform = transforms.Compose([
     transforms.Resize((224, 224)),
     transforms.ToTensor(),
-    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+    transforms.Normalize(
+        mean=[0.485, 0.456, 0.406],
+        std=[0.229, 0.224, 0.225]
+    )
 ])
 
+
 def predict_image(img_path):
+
     image = Image.open(img_path).convert("RGB")
+
     image = transform(image).unsqueeze(0)
 
     with torch.no_grad():
+
         outputs = model(image)
-        probs = torch.nn.functional.softmax(outputs[0], dim=0)
+
+        probs = torch.nn.functional.softmax(
+            outputs[0],
+            dim=0
+        )
+
         confidence, predicted = torch.max(probs, 0)
 
-    return classes[predicted.item()], confidence.item()
+    predicted_class = classes[predicted.item()]
 
+    return predicted_class, confidence.item()
