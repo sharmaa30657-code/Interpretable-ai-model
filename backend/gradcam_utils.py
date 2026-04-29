@@ -47,4 +47,8 @@ def generate_gradcam(model, img_path):
 
     output_path = os.path.join(output_dir, "gradcam_result.jpg")
     cv2.imwrite(output_path, visualization)
+
+    del cam
+    del img_tensor
+
     return "/static/gradcam_result.jpg"
