@@ -1,4 +1,6 @@
 import os
+import matplotlib
+matplotlib.use("Agg")
 
 if __package__ in (None, ""):
 
