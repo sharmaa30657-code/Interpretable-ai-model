@@ -5,10 +5,10 @@ services:
     plan: free
     rootDir: backend
     buildCommand: python -m pip install --no-cache-dir -r requirements.txt --extra-index-url https://download.pytorch.org/whl/cpu
-    startCommand: gunicorn app:app --workers 1 --threads 1
+    startCommand: gunicorn app:app --workers 1 --threads 1 --bind 0.0.0.0:$PORT --timeout 120
     envVars:
       - key: PYTHON_VERSION
-        value: 3.11.4
+        value: 3.11.9
       - key: ENABLE_GRADCAM
         value: "false"
       - key: OMP_NUM_THREADS
