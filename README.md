@@ -46,3 +46,10 @@ python app.py
 • Add Grad-CAM for model interpretability  
 • Improve dataset size  
 • Add better error handling
+
+## live demo 
+.live App:
+https://interpretable-ai-model.onrender.com/
+
+## GitHub Repository
+https://github.com/sharmaa30657-code/Interpretable-ai-model
