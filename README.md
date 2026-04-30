@@ -53,3 +53,10 @@ https://interpretable-ai-model.onrender.com/
 
 ## GitHub Repository
 https://github.com/sharmaa30657-code/Interpretable-ai-model
+
+## CI/CD Pipeline
+
+- Source code managed using GitHub
+- Automatic deployment configured using Render
+- Whenever new code is pushed to GitHub, Render automatically rebuilds and redeploys the application
+- This creates a simple CI/CD workflow
