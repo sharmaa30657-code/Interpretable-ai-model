@@ -5,3 +5,4 @@ torchvision==0.16.0
 pillow
 opencv-python-headless
 gunicorn
+grad-cam
