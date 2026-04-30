@@ -1,6 +1,5 @@
 dataset/
 uploads/
 __pycache__/
-*.pth
 venv/
 backend/static/gradcam_result.jpg
