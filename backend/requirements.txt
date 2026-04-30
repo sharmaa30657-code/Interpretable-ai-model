@@ -1,8 +1,7 @@
 flask
 torch==2.1.0
-torchvision==0.15.2+cpu
-opencv-python-headless
-numpy
+torchvision==0.16.0
 pillow
+numpy
+opencv-python-headless
 gunicorn
-grad-cam
