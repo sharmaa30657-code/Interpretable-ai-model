@@ -1,17 +1,16 @@
 import os
 
 if __package__ in (None, ""):
-
-    from gradcam_utils import generate_gradcam
     from model import predict_image, model
 else:
-    from .gradcam_utils import generate_gradcam
     from .model import predict_image, model
 
 from flask import render_template
 from flask import Flask, request, jsonify
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
+
+ENABLE_GRADCAM = os.environ.get("ENABLE_GRADCAM", "true").lower() in ("1", "true", "yes")
 
 UPLOAD_FOLDER = "uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
@@ -35,7 +34,15 @@ def upload_image():
     file.save(filepath)
 
     prediction, confidence = predict_image(filepath)
-    heatmap = generate_gradcam(model, filepath)
+    heatmap = None
+
+    if ENABLE_GRADCAM:
+        if __package__ in (None, ""):
+            from gradcam_utils import generate_gradcam
+        else:
+            from .gradcam_utils import generate_gradcam
+
+        heatmap = generate_gradcam(model, filepath)
 
     return render_template(
         "index.html",

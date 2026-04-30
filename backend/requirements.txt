@@ -1,6 +1,6 @@
 flask
-torch==2.11.0
-torchvision
+torch==2.0.1+cpu
+torchvision==0.15.2+cpu
 opencv-python-headless
 numpy
 pillow
