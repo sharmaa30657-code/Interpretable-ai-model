@@ -1,7 +1,7 @@
+numpy==1.26.4
 flask
 torch==2.1.0
 torchvision==0.16.0
 pillow
-numpy
 opencv-python-headless
 gunicorn
