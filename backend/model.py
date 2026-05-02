@@ -138,3 +138,12 @@ def predict_image(img_path):
     predicted_class = classes[predicted.item()]
 
     return predicted_class, confidence.item()
+
+
+def predict_image_with_gradcam(img_path):
+    from gradcam_utils import generate_gradcam
+    
+    label, confidence = predict_image(img_path)
+    gradcam_path = generate_gradcam(model, img_path)
+    
+    return label, confidence, gradcam_path

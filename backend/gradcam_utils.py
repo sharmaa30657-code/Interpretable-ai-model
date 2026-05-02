@@ -37,9 +37,10 @@ def generate_gradcam(model, img_path):
     os.makedirs(output_dir, exist_ok=True)
 
     output_path = os.path.join(output_dir, "gradcam_result.jpg")
-    cv2.imwrite(output_path, visualization)
+    visualization_bgr = cv2.cvtColor((visualization * 255).astype(np.uint8), cv2.COLOR_RGB2BGR)
+    cv2.imwrite(output_path, visualization_bgr)
 
     del cam
     del img_tensor
 
-    return "/static/gradcam_result.jpg"
+    return output_path

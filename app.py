@@ -1,8 +1,27 @@
-import sys
-import os
-sys.path.insert(0, os.path.dirname(__file__))
+import gradio as gr
 
-from backend.app import app
+from backend.model import predict_image, model
+from backend.gradcam_utils import generate_gradcam
 
-if __name__ == "__main__":
-    app.run(debug=True, host="127.0.0.1", port=5000)
+def predict(img):
+
+    prediction, confidence = predict_image(img)
+
+    heatmap = generate_gradcam(model, img)
+
+    result = f"Prediction: {prediction}\nConfidence: {confidence*100:.2f}%"
+
+    return result, heatmap
+
+demo = gr.Interface(
+    fn=predict,
+    inputs=gr.Image(type="filepath"),
+    outputs=[
+        gr.Textbox(label="Prediction Result"),
+        gr.Image(label="Grad-CAM Visualization")
+    ],
+    title="Interpretable AI Model",
+    description="Upload an image to see predictions with Grad-CAM visualization"
+)
+
+demo.launch()
