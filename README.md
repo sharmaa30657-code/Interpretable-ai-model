@@ -60,3 +60,18 @@ https://github.com/sharmaa30657-code/Interpretable-ai-model
 - Automatic deployment configured using Render
 - Whenever new code is pushed to GitHub, Render automatically rebuilds and redeploys the application
 - This creates a simple CI/CD workflow
+
+---
+title: Interpretable AI Model
+emoji: 🚀
+colorFrom: blue
+colorTo: red
+sdk: gradio
+sdk_version: "4.44.0"
+app_file: app.py
+pinned: false
+---
+
+# Interpretable AI Model
+
+This project uses PyTorch and Grad-CAM for image classification and explainable AI visualization.
