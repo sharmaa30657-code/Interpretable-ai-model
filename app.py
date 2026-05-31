@@ -1,27 +1,19 @@
-import gradio as gr
+import os
+import sys
 
-from backend.model import predict_image, model
-from backend.gradcam_utils import generate_gradcam
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+if BASE_DIR not in sys.path:
+    sys.path.insert(0, BASE_DIR)
 
-def predict(img):
+try:
+    from backend.app import app
+except ImportError as exc:
+    raise SystemExit(
+        "This project uses backend/app.py for the web server. "
+        "Install dependencies from backend/requirements.txt and run `python backend/app.py`. "
+        f"Import error: {exc}"
+    )
 
-    prediction, confidence = predict_image(img)
-
-    heatmap = generate_gradcam(model, img)
-
-    result = f"Prediction: {prediction}\nConfidence: {confidence*100:.2f}%"
-
-    return result, heatmap
-
-demo = gr.Interface(
-    fn=predict,
-    inputs=gr.Image(type="filepath"),
-    outputs=[
-        gr.Textbox(label="Prediction Result"),
-        gr.Image(label="Grad-CAM Visualization")
-    ],
-    title="Interpretable AI Model",
-    description="Upload an image to see predictions with Grad-CAM visualization"
-)
-
-demo.launch()
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=False)

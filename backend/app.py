@@ -1,9 +1,12 @@
 import os
+import sys
 
-if __package__ in (None, ""):
-    from model import predict_image, model
-else:
-    from .model import predict_image, model
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.dirname(BASE_DIR)
+if PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT)
+
+from backend.model import predict_image, model
 
 from flask import render_template
 from flask import Flask, request, jsonify
@@ -37,12 +40,13 @@ def upload_image():
     heatmap = None
 
     if ENABLE_GRADCAM:
-        if __package__ in (None, ""):
-            from gradcam_utils import generate_gradcam
-        else:
-            from .gradcam_utils import generate_gradcam
+        try:
+            from backend.gradcam_utils import generate_gradcam
 
-        heatmap = generate_gradcam(model, filepath)
+            heatmap = generate_gradcam(model, filepath)
+        except Exception as e:
+            heatmap = None
+            app.logger.error(f"Grad-CAM failed: {e}")
 
     return render_template(
         "index.html",
