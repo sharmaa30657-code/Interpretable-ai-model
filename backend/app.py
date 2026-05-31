@@ -6,10 +6,8 @@ PROJECT_ROOT = os.path.dirname(BASE_DIR)
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 
-from backend.model import predict_image, model
-
-from flask import render_template
 from flask import Flask, request, jsonify
+from .model import predict_image, model
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
 
@@ -41,7 +39,7 @@ def upload_image():
 
     if ENABLE_GRADCAM:
         try:
-            from backend.gradcam_utils import generate_gradcam
+            from .gradcam_utils import generate_gradcam
 
             heatmap = generate_gradcam(model, filepath)
         except Exception as e:
